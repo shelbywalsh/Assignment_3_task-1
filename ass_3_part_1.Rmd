@@ -2,7 +2,11 @@
 title: "ass_3_task_1"
 author: "Shelby Walsh"
 date: "2/21/2021"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
