@@ -1,0 +1,24 @@
+---
+title: "Wind in the Willows Analysis"
+author: "Shelby Walsh"
+date: "2/21/2021"
+output: html_document
+---
+
+```{r setup, include= FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(pdftools)
+library(ggwordcloud)
+```
+
+# Wind in the Willows: The cheekiest book ever
+
+https://freeditorial.com/en/books/the-wind-in-the-willows/related-books
+
+```{r}
+willow_text <- pdf_text("ww.pdf")
+```
