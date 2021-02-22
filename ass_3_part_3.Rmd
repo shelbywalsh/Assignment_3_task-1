@@ -19,6 +19,56 @@ library(ggwordcloud)
 
 https://freeditorial.com/en/books/the-wind-in-the-willows/related-books
 
-```{r}
+```{r, cache = TRUE}
 willow_text <- pdf_text("ww.pdf")
+
+willow_tidy <- data.frame(willow_text) %>% 
+  mutate(text_full = str_split(willow_text, pattern = '\\n')) %>% 
+  unnest(text_full) %>% 
+  mutate(text_full = str_trim(text_full)) 
 ```
+
+
+```{r}
+willow_df <- willow_tidy %>% 
+  slice(-(1:4))
+  
+
+willow_tokens <- willow_df %>% 
+  unnest_tokens(word, text_full) %>% 
+  select(-willow_text)
+
+willow_nonstop_words <- willow_tokens %>% 
+  anti_join(stop_words)
+
+nonstop_counts <- willow_nonstop_words %>% 
+  count(word)
+
+top_200 <- nonstop_counts %>% 
+  arrange(-n) %>% 
+  slice(1:200)
+
+top_100_wo <- nonstop_counts %>% 
+  arrange(-n) %>% 
+  slice(1:100) %>% 
+  slice(-(1:4))
+
+top_5_words <- nonstop_counts %>% 
+  arrange(-n) %>% 
+  slice(1:5)
+
+```
+
+
+```{r}
+ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
+  geom_text_wordcloud(aes(color = n, size = n), shape = "diamond") +
+  scale_size_area(max_size = 6) +
+  scale_color_gradientn(colors = c("darkgreen","blue","purple")) +
+  theme_minimal()
+
+ww_cloud
+```
+
+
+
