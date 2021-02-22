@@ -70,5 +70,32 @@ ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
 ww_cloud
 ```
 
+```{r}
+get_sentiments(lexicon = "nrc")
+
+get_sentiments(lexicon = "afinn")
+
+afinn_pos <- get_sentiments("afinn") %>% 
+  filter(value %in% c(3,4,5))
+
+afinn_pos
+
+willow_afinn <- willow_nonstop_words %>% 
+  inner_join(get_sentiments("afinn"))
+
+willow_afinn_count <- willow_afinn %>% 
+  count(word)
+
+
+willow_nrc <- willow_nonstop_words %>% 
+  inner_join(get_sentiments("nrc"))
+
+willow_nrc_counts <- willow_nrc %>% 
+  count(sentiment)
+
+ggplot(data = willow_nrc_counts, aes(x = sentiment, y = n)) +
+  geom_col() +
+  coord_flip()
+```
 
 
