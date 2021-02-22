@@ -2,7 +2,11 @@
 title: "Wind in the Willows Analysis"
 author: "Shelby Walsh"
 date: "2/21/2021"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include= FALSE}
@@ -48,6 +52,10 @@ top_200 <- nonstop_counts %>%
   arrange(-n) %>% 
   slice(1:200)
 
+top_50 <- nonstop_counts %>% 
+  arrange(-n) %>% 
+  slice(1:50)
+
 top_100_wo <- nonstop_counts %>% 
   arrange(-n) %>% 
   slice(1:100) %>% 
@@ -68,6 +76,14 @@ ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
   theme_minimal()
 
 ww_cloud
+
+ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
+  geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
+  scale_size_area(max_size = 6) +
+  scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
+  theme_minimal()
+
+ww_cloud_50
 ```
 
 ```{r}
@@ -84,7 +100,7 @@ willow_afinn <- willow_nonstop_words %>%
   inner_join(get_sentiments("afinn"))
 
 willow_afinn_count <- willow_afinn %>% 
-  count(word)
+  count(word, value)
 
 
 willow_nrc <- willow_nonstop_words %>% 
@@ -96,6 +112,10 @@ willow_nrc_counts <- willow_nrc %>%
 ggplot(data = willow_nrc_counts, aes(x = sentiment, y = n)) +
   geom_col() +
   coord_flip()
+
+ggplot(data = willow_afinn_count, aes(x = value, y = n)) +
+  geom_col() 
 ```
+
 
 
