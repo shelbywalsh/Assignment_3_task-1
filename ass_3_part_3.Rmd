@@ -17,11 +17,19 @@ library(tidytext)
 library(textdata)
 library(pdftools)
 library(ggwordcloud)
+library(unikn)
 ```
 
 # Wind in the Willows: The cheekiest book ever
 
+#### This wild ride, is full of twists, turns and friendships. Sadly this analysis did not turn out the way I invisioned. Time has distorted my memory. Unfortunately, "ass" only appears 11 times, but in my memory and heart, it is the most important word in the entire book. 
+
+#### I want to give a shout out to all the fathers out there, who strategically pick when to popcorn your children to read aloud the curse words in this book. 
+
+Text was provided by:
 https://freeditorial.com/en/books/the-wind-in-the-willows/related-books
+
+![The 4 BEST FRIENDS that anyone could have.](wind.png)
 
 ```{r, cache = TRUE}
 willow_text <- pdf_text("ww.pdf")
@@ -56,6 +64,10 @@ top_50 <- nonstop_counts %>%
   arrange(-n) %>% 
   slice(1:50)
 
+top_100 <- nonstop_counts %>% 
+  arrange(-n) %>% 
+  slice(1:100)
+
 top_100_wo <- nonstop_counts %>% 
   arrange(-n) %>% 
   slice(1:100) %>% 
@@ -75,7 +87,7 @@ ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
   scale_color_gradientn(colors = c("darkgreen","blue","purple")) +
   theme_minimal()
 
-ww_cloud
+
 
 ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
   geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
@@ -84,6 +96,14 @@ ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
   theme_minimal()
 
 ww_cloud_50
+
+ww_cloud_100 <- ggplot(data = top_100, aes(label = word)) +
+  geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
+  scale_size_area(max_size = 8) +
+  scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
+  theme_minimal()
+
+
 ```
 
 ```{r}
@@ -94,7 +114,6 @@ get_sentiments(lexicon = "afinn")
 afinn_pos <- get_sentiments("afinn") %>% 
   filter(value %in% c(3,4,5))
 
-afinn_pos
 
 willow_afinn <- willow_nonstop_words %>% 
   inner_join(get_sentiments("afinn"))
@@ -114,7 +133,10 @@ ggplot(data = willow_nrc_counts, aes(x = sentiment, y = n)) +
   coord_flip()
 
 ggplot(data = willow_afinn_count, aes(x = value, y = n)) +
-  geom_col() 
+  geom_col() +
+  labs(x = "Afinn Values",
+       y = "Observations",
+       title = "Afinn Analysis Wind in the Willows")
 ```
 
 

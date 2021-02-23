@@ -39,14 +39,16 @@ ca_county <- read_sf(here("ca_shape"), layer = "CA_Counties_TIGER2016"
 #transform to match
 ca_county <- st_transform(ca_county, st_crs(oil_spill))
 ```
+# California Oil Spills: 2008
 
 
+#### Let's look at the California oilspills recorded in 2008. These spills include inland and marine oil spills. Each red do represents a recorded oil spill.
 ```{r}
 
 tmap_mode("view")
 
-tm_shape(oil_spill) +
-  tm_dots("county")
+#tm_shape(oil_spill) +
+  #tm_dots("county")
 
 tm_shape(ca_county) +
   tm_fill("name", palette = "YlOrBr", show.legend = FALSE) +
@@ -54,8 +56,9 @@ tm_shape(ca_county) +
   tm_dots(aes(color = "darkred")) 
 
 ```
+# Inland Oil Spills: 2008
 
-
+#### Now let's look at just inland oil spills per county in 2008. Los Angeles County had the most recorded oil spills, with over twice as many recorded events than any other county. Los Angeles had 370 events, while the next closest, San Mateo County, had 173 events. 
 ```{r}
 #looking at inland spills counts per county
 inland <- oil_spill %>% 

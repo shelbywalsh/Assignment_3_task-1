@@ -11,6 +11,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE, message = FALSE)
+library(raster)
 library(tidyverse)
 library(janitor)
 library(here)
@@ -18,4 +19,16 @@ library(sf)
 library(tmap)
 library(gstat)
 library(stars)
+library(fasterize)
 ```
+
+
+```{r}
+my_files <- list.files(path = 'ca_cetaceans', full.names = TRUE)
+
+ca_stack <- raster::stack(my_files)
+ca_stack
+
+ca_stack <- raster::aggregate(ca_stack, fact = 3, fun = mean)
+```
+
