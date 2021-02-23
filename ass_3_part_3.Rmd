@@ -17,6 +17,8 @@ library(tidytext)
 library(textdata)
 library(pdftools)
 library(ggwordcloud)
+library(colorspace)
+library(RColorBrewer)
 library(unikn)
 ```
 
@@ -79,6 +81,8 @@ top_5_words <- nonstop_counts %>%
 
 ```
 
+#### The WordCloud below shows the Top 50 words used in "Wind in the Willows". Mr. Toad, coming in at #1, is of course our wild, load and over the top friend. Rat, while less in your face as Toad, is quite the talkative fellow, coming in at #2. Mole, our sweet, shy naive friend comes in at #3.  My personal favorite, Badger comes in at #4. Although in fourth place for mentions, he is #1 in our hearts. River, home, water, animals, friends, boat and bank are all key words in painting a story about our 4 friends who live along a river. 
+
 
 ```{r}
 ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
@@ -91,7 +95,7 @@ ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
 
 ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
   geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
-  scale_size_area(max_size = 6) +
+  scale_size_area(max_size = 12) +
   scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
   theme_minimal()
 
@@ -103,23 +107,31 @@ ww_cloud_100 <- ggplot(data = top_100, aes(label = word)) +
   scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
   theme_minimal()
 
-
 ```
+### If this WordCloud intices you, I recommend reading the entire adventure!
 
-```{r}
+
+```{r, include=FALSE}
 get_sentiments(lexicon = "nrc")
 
 get_sentiments(lexicon = "afinn")
+```
 
-afinn_pos <- get_sentiments("afinn") %>% 
-  filter(value %in% c(3,4,5))
 
+
+## Now let's look at how the book stacks up against the Afinn Ratings
+
+
+```{r}
 
 willow_afinn <- willow_nonstop_words %>% 
   inner_join(get_sentiments("afinn"))
 
 willow_afinn_count <- willow_afinn %>% 
   count(word, value)
+
+willow_afinn_col <- brewer.pal(11, "BrBG")
+willow_afinn_col <- colorRampPalette(willow_afinn_col)(713)
 
 
 willow_nrc <- willow_nonstop_words %>% 
@@ -128,16 +140,26 @@ willow_nrc <- willow_nonstop_words %>%
 willow_nrc_counts <- willow_nrc %>% 
   count(sentiment)
 
-ggplot(data = willow_nrc_counts, aes(x = sentiment, y = n)) +
-  geom_col() +
-  coord_flip()
+#ggplot(data = willow_nrc_counts, aes(x = sentiment, y = n)) +
+  #geom_col() +
+  #coord_flip()
 
 ggplot(data = willow_afinn_count, aes(x = value, y = n)) +
-  geom_col() +
+  geom_col(aes(color = value)) +
+  theme_minimal() +
   labs(x = "Afinn Values",
        y = "Observations",
-       title = "Afinn Analysis Wind in the Willows")
+       title = "Afinn Analysis Wind in the Willows") +
+  theme(plot.title = element_text(size = 14,
+                                   face = "bold",
+        hjust = 0.5),
+        axis.title.y = element_text(size = 14)) 
+  
 ```
+
+#### Afinn values assign values to words based on how positive or negative the word is. The scores go from -5 to 5. This is an adventure book, and with that comes ups and downs. We can see that through the break down of scores, a majority of words rating -2, but a lot of the words in the story are above 0. 
+
+##### As for my original analysis goals, Ass scores a -4 on the Afinn, which is represented by the left most bar on the graph. 
 
 
 
