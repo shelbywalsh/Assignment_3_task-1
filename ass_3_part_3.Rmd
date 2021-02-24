@@ -108,7 +108,7 @@ ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
   scale_color_gradientn(colors = c("dodgerblue2","hotpink4", "darkgreen")) +
   theme_minimal()
 
-ww_cloud_50
+
 
 ww <- ggdraw() +
   draw_image(river) +
