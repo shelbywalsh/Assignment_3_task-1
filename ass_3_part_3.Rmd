@@ -20,6 +20,15 @@ library(ggwordcloud)
 library(colorspace)
 library(RColorBrewer)
 library(unikn)
+library(jpeg)
+library(ggplot2)
+library(cowplot)
+library(magick)
+library(rasterImage)
+library(plotrix)
+library(plotly)
+library(png)
+
 ```
 
 # Wind in the Willows: The cheekiest book ever
@@ -91,20 +100,26 @@ ww_cloud <- ggplot(data = top_100_wo, aes(label = word)) +
   scale_color_gradientn(colors = c("darkgreen","blue","purple")) +
   theme_minimal()
 
-
+river <- readJPEG("river.jpg")
 
 ww_cloud_50 <- ggplot(data = top_50, aes(label = word)) +
   geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
   scale_size_area(max_size = 12) +
-  scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
+  scale_color_gradientn(colors = c("hotpink4","dodgerblue2","deepskyblue", "darkgreen")) +
   theme_minimal()
 
 ww_cloud_50
 
+ww <- ggdraw() +
+  draw_image(river) +
+  draw_plot(ww_cloud_50)
+
+ww
+
 ww_cloud_100 <- ggplot(data = top_100, aes(label = word)) +
   geom_text_wordcloud(aes(color = n, size = n), shape = "oval") +
   scale_size_area(max_size = 8) +
-  scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue3")) +
+  scale_color_gradientn(colors = c("darkgreen","steelblue1","deepskyblue")) +
   theme_minimal()
 
 ```
@@ -129,9 +144,6 @@ willow_afinn <- willow_nonstop_words %>%
 
 willow_afinn_count <- willow_afinn %>% 
   count(word, value)
-
-willow_afinn_col <- brewer.pal(11, "BrBG")
-willow_afinn_col <- colorRampPalette(willow_afinn_col)(713)
 
 
 willow_nrc <- willow_nonstop_words %>% 
