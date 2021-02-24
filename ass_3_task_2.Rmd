@@ -20,6 +20,7 @@ library(tmap)
 library(gstat)
 library(stars)
 library(fasterize)
+library(rnaturalearth)
 ```
 
 
@@ -27,8 +28,20 @@ library(fasterize)
 my_files <- list.files(path = 'ca_cetaceans', full.names = TRUE)
 
 ca_stack <- raster::stack(my_files)
-ca_stack
 
-ca_stack <- raster::aggregate(ca_stack, fact = 3, fun = mean)
+
+ca_stack <- raster::aggregate(ca_stack, fact = 2, fun = mean)
+
+ca_mean <- calc(ca_stack, fun = mean, na.rm = TRUE)
+
+plot(ca_mean)
+```
+
+```{r create mask from polygons, eval = FALSE}
+
+land_sf <- rnaturalearth::ne_coastline() %>%
+  st_transform(crs(ca_stack))
+land_rast <- fasterize::fasterize(land_sf, ca_mean, field = 'OBJECTI')
+plot(land_rast)
 ```
 
